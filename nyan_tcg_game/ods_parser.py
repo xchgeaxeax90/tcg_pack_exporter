@@ -17,7 +17,11 @@ def read_card_data(filename):
 
 def read_bundle_data(filename, bundle_type: BundleType):
     if bundle_type == BundleType.CHARACTER:
-        return convert_to_row_dict(read_sheet(filename, 'Character Groups'))
+        data = read_sheet(filename, 'Character Groups')
     elif bundle_type == BundleType.CARD:
-        return convert_to_row_dict(read_sheet(filename, 'Card Groups'))
-    return None
+        data = read_sheet(filename, 'Card Groups')
+    else:
+        return None
+    data = convert_to_row_dict(data)
+    data = [{'bundle_type': bundle_type, **d} for d in data]
+    return data

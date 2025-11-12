@@ -37,11 +37,12 @@ def main():
     cards = crop_images(cards, image_directory, args.export_dir)
 
     # Handle bundles
-    def parse_bundle_data(bundle_type):
-        bundle_dicts = ods_parser.read_bundle_data(args.ods_input, bundle_type)
-        return parse_bundles(bundle_dicts, cards, bundle_type)
+    def parse_bundle_data():
+        bundle_data = ods_parser.read_bundle_data(args.ods_input, BundleType.CARD)
+        bundle_data.extend(ods_parser.read_bundle_data(args.ods_input, BundleType.CHARACTER))
+        return parse_bundles(bundle_data, cards)
 
-    bundles = parse_bundle_data(BundleType.CARD) + parse_bundle_data(BundleType.CHARACTER)
+    bundles = parse_bundle_data()
 
     nyancards = list(map(NyanCard.from_card, cards))
 

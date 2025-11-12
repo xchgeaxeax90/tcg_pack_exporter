@@ -24,5 +24,5 @@ def export_bundle_json(bundles, output_filename):
 
 
 def export_pack_json(pack: Pack, output_filename: str):
-    with open(output_filename, 'w') as f:
+    with open(output_filename, 'w', encoding='utf-8') as f:
         f.write(pack.model_dump_json(indent=2, by_alias=True))

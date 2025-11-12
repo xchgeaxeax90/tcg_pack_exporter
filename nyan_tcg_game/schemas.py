@@ -30,8 +30,10 @@ class BundleType(str, Enum):
 
 class Bundle(BaseModel):
     name: str
-    bundle_type: BundleType = Field(..., alias='type')
+    #bundle_type: BundleType = Field(..., alias='type') # This is not actually used
+    # These actually set whether a bundle includes characters or specific cards
     characters: list[str]
+    cards: list[str] 
     sub_bundles: list[str]
     model_config = ConfigDict(populate_by_name=True)
 

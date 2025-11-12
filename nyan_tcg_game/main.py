@@ -35,13 +35,13 @@ def main():
     card_data = ods_parser.read_card_data(args.ods_input)
     cards = parse_cards(card_data)
     cards = download_missing_images(cards, download_cache_dir)
-    cards = crop_images(cards, image_directory)
+    cards = crop_images(cards, image_directory, args.export_dir)
     export_card_json(cards, card_filename)
 
     # Handle bundles
     def parse_bundle_data(bundle_type):
         bundle_dicts = ods_parser.read_bundle_data(args.ods_input, bundle_type)
-        return parse_bundles(bundle_dicts, bundle_type)
+        return parse_bundles(bundle_dicts, cards, bundle_type)
 
     bundles = parse_bundle_data(BundleType.CARD) + parse_bundle_data(BundleType.CHARACTER)
     export_bundle_json(bundles, bundle_filename)

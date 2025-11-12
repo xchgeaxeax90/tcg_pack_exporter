@@ -15,7 +15,7 @@ class NyanCard(BaseModel):
     @classmethod
     def from_card(cls, card):
         return cls(
-            name=card.get_card_name(),
+            name=card.card_name,
             subtext=card.company,
             character=card.name,
             rarity=card.rarity,

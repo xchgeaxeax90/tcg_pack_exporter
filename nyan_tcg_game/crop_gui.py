@@ -133,11 +133,11 @@ def run_gui(cards, output_directory):
     app = CropTool(root, cards, output_directory)
     root.mainloop()
 
-def crop_images(cards, output_directory):
+def crop_images(cards, output_directory, export_prefix):
     resize_needed = []
     for card in cards:
         filename = os.path.join(output_directory, card.get_image_filename('.png'))
-        card.resized_uri = card.get_image_filename('.png')
+        card.resized_uri = os.path.relpath(filename, export_prefix)
         if not os.path.exists(filename):
             resize_needed.append(card)
     run_gui(resize_needed, output_directory)

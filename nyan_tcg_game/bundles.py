@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from collections import defaultdict
 import logging
 from nyan_tcg_game.schemas import Bundle, BundleType
+from nyan_tcg_game.cards import Card
 
 logger = logging.getLogger(__name__)
 
@@ -24,28 +25,37 @@ class BundleEntry:
 
     
 
-def parse_bundles(ods_data: list[dict], bundle_type: BundleType) -> list[Bundle]:
+def parse_bundles(ods_data: list[dict], cards: list[Card],  bundle_type: BundleType) -> list[Bundle]:
     bundle_entries = map(BundleEntry.parse_dict, ods_data)
 
     bundle_dict = defaultdict(list)
     for entry in bundle_entries:
         bundle_dict[entry.bundle_name].append(entry)
 
+    if bundle_type == BundleType.CARD:
+        card_set = set(map(lambda x: x.card_name, cards))
+    elif bundle_type == BundleType.CHARACTER:
+        card_set = set(map(lambda x: x.name, cards))
+    else:
+        raise RuntimeError('Invalid bundle type')
     
     bundles = []
     for bundle_name, entries in bundle_dict.items():
         cards = []
         sub_bundles = []
         for entry in entries:
-            if entry.card_name in bundle_dict and entry.card_name != bundle_name:
+            if entry.card_name in card_set:
+                cards.append(entry.card_name)
+            elif entry.card_name in bundle_dict and entry.card_name != bundle_name:
                 sub_bundles.append(entry.card_name)
             else:
-                cards.append(entry.card_name)
+                logger.warn(f'Cannot map bundle entry {entry} to any card or bundle name')
         logger.debug(cards)
-        bundles.append(Bundle(name=bundle_name,
-                              bundle_type=bundle_type,
-                              characters=cards,
-                              sub_bundles=sub_bundles))
+        if cards or sub_bundles:
+            bundles.append(Bundle(name=bundle_name,
+                                bundle_type=bundle_type,
+                                characters=cards,
+                                sub_bundles=sub_bundles))
     return bundles
         
             

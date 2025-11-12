@@ -21,10 +21,9 @@ class Card:
     image_fetch_url: str | None # If an image is fetched from the web, this is the URL it's fetched from
     resized_uri: str | None # Stores the image path after it has been resized
 
-    def get_card_name(self) -> str:
-        if self.variant:
-            return f'{self.name} ({self.variant})'
-        return self.name
+    @property
+    def card_name(self):
+        return f'{self.name} ({self.variant})' if self.variant else self.name
 
     def get_image_filename(self, suffix) -> str:
         filename = f'{self.name}_{self.variant}' if self.variant else self.name

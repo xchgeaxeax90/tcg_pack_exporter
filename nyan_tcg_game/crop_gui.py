@@ -6,10 +6,24 @@ import os
 
 logger = logging.getLogger(__name__)
 
-# ===== CONFIG =====
+# The images fed into nyan's tcg bot are required to be exactly
+# 550x750 pixels However, the actual viewable area is slightly
+# less. The card frame cuts off 8 pixels on each side of the image,
+# leaving an area of 534x734. Finally, the card's nameplate cuts off
+# an additional 46 pixels from the top of the image, yielding a final
+# viewable area of 534x688 pixels
+
+# This script allows the user to easily crop the image to the correct
+# dimensions. The user is presented with a rectangle indicating the
+# viewable area on the image that they would like to crop. When the
+# crop button is selected, the GUI crops the image to the correct
+# dimensions to be imported into the tcg bot, while the viewable area
+# is positioned in the correct area on the card
+
+
 OUTPUT_SIZE = (550, 750)  # target size after crop/resize
 VISIBLE_SIZE = (534, 688)
-VISIBLE_RECT_OFFSETS = (-8, -55, 8, 8)
+VISIBLE_RECT_OFFSETS = (-8, -54, 8, 8)
 OUTPUT_DIR = "cropped_output"
 
 class CropTool:
@@ -20,6 +34,7 @@ class CropTool:
         self.current_index = 0
         self.start_x = self.start_y = None
         self.rect = None
+        self.crop_rect = None
         self.crop_coords = None
         self.scale = 1.0
 
@@ -87,7 +102,10 @@ class CropTool:
         self.start_x, self.start_y = event.x, event.y
         if self.rect:
             self.canvas.delete(self.rect)
-        self.rect = self.canvas.create_rectangle(self.start_x, self.start_y, self.start_x, self.start_y, outline="red", width=2)
+        self.rect = self.canvas.create_rectangle(self.start_x, self.start_y, self.start_x, self.start_y, outline="blue", width=2)
+        if self.crop_rect:
+            self.canvas.delete(self.crop_rect)
+        self.crop_rect = self.canvas.create_rectangle(self.start_x, self.start_y, self.start_x, self.start_y, outline="red", width=2)
 
     def on_drag(self, event):
         if not self.start_x or not self.start_y:
@@ -111,10 +129,14 @@ class CropTool:
         y2 = y1 + height
 
         self.canvas.coords(self.rect, x1, y1, x2, y2)
+        crop_coords = self.get_crop_bbox_from_view_bbox((x1, y1, x2, y2))
+        logger.debug(f"Crop rect coords: {crop_coords}")
+        self.canvas.coords(self.crop_rect, *crop_coords)
+
 
     def on_release(self, event):
         if self.rect:
-            x1, y1, x2, y2 = self.canvas.coords(self.rect)
+            x1, y1, x2, y2 = self.canvas.coords(self.crop_rect)
             ow, oh = self.coord_offset
             self.crop_coords = (x1 - ow, y1 - oh, x2 - ow, y2 - oh)
 
@@ -124,11 +146,6 @@ class CropTool:
             return
 
         x1, y1, x2, y2 = coords = [int(c / self.scale) for c in self.crop_coords]
-
-        # Adjust image crop coordinates so cropped image corresponds to visible region on card
-        w, h = (x2-x1, y2-y1)
-        scale = w / VISIBLE_SIZE[0]
-        x1, y1, x2, y2 = coords = tuple(map(lambda x, y: x + (y*scale), coords, VISIBLE_RECT_OFFSETS))
 
         cropped = self.img.crop((x1, y1, x2, y2)).resize(OUTPUT_SIZE, Image.LANCZOS)
 
@@ -144,6 +161,14 @@ class CropTool:
         self.current_index += 1
         self.crop_coords = None
         self.load_image()
+
+    def get_crop_bbox_from_view_bbox(self, view_bbox):
+        x1, y1, x2, y2 = view_bbox
+        w = x2-x1
+        scale = w / VISIBLE_SIZE[0]
+        return tuple(map(lambda x, y: x + y*scale, view_bbox, VISIBLE_RECT_OFFSETS))
+        
+    
 
 def run_gui(cards, output_directory):
     if not cards:

@@ -7,7 +7,6 @@ import os
 logger = logging.getLogger(__name__)
 
 # ===== CONFIG =====
-ASPECT_RATIO = (16, 9)  # (width, height)
 OUTPUT_SIZE = (550, 750)  # target size after crop/resize
 OUTPUT_DIR = "cropped_output"
 
@@ -65,13 +64,19 @@ class CropTool:
         ch = max(self.canvas.winfo_height(), 600)
 
         iw, ih = self.img.size
+
         scale = min(cw/iw, ch/ih)
         self.scale = scale
         new_w, new_h = int(iw*scale), int(ih * scale)
+
+        offsetx, offsety = (cw // 2 - new_w, 0)
+
         self.display_img = self.img.resize((new_w, new_h), Image.LANCZOS)
         self.tk_img = ImageTk.PhotoImage(self.display_img)
-        self.canvas.create_image(0, 0, anchor="nw", image=self.tk_img)
+        self.canvas.create_image(offsetx, offsety, anchor="nw", image=self.tk_img)
         self.canvas.image = self.tk_img
+
+        self.coord_offset = (offsetx, offsety)
 
     def on_resize(self, event):
         self.display_image()
@@ -107,7 +112,10 @@ class CropTool:
 
     def on_release(self, event):
         if self.rect:
-            self.crop_coords = self.canvas.coords(self.rect)
+            x1, y1, x2, y2 = self.canvas.coords(self.rect)
+            ow, oh = self.coord_offset
+            self.crop_coords = (x1 - ow, y1 - oh, x2 - ow, y2 - oh)
+            logger.debug(f"{self.crop_coords=}")
 
     def crop_and_next(self):
         if not self.crop_coords:

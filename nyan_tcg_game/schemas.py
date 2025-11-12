@@ -11,9 +11,9 @@ class Card(BaseModel):
     name: str
     subtext: str
     character: str
-    image_url: str
-    image_credit: str
-    image_source: str
+    image_url: str | None
+    image_credit: str | None
+    image_source: str | None
     rarity: Rarity
 
 

@@ -25,6 +25,18 @@ files = [
 ]
 
 [[package]]
+name = "lml"
+version = "0.2.0"
+description = "Load me later. A lazy plugin management system."
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "lml-0.2.0-py2.py3-none-any.whl", hash = "sha256:20c80728189e46e8d986f5d0cdf6d83c493471fc25b1c31a8cb3fa96e80b58f8"},
+    {file = "lml-0.2.0.tar.gz", hash = "sha256:8dd5afb4367a593d1cdb2144a05874cd9938f5266bebb0c9e1413200423c0d74"},
+]
+
+[[package]]
 name = "odfpy"
 version = "1.4.1"
 description = "Python API and tools to manipulate OpenDocument files"
@@ -191,6 +203,43 @@ files = [
 typing-extensions = ">=4.14.1"
 
 [[package]]
+name = "pyexcel-io"
+version = "0.6.7"
+description = "A python library to read and write structured data in csv, zipped csvformat and to/from databases"
+optional = false
+python-versions = ">=3.6"
+groups = ["main"]
+files = [
+    {file = "pyexcel_io-0.6.7-py2.py3-none-any.whl", hash = "sha256:add9f3c1489070ab0a3226bab7d23d4b84a364f5b44f3a14e2ce785ede88fcb3"},
+    {file = "pyexcel_io-0.6.7.tar.gz", hash = "sha256:2c33d8df505e21a13bed585ac6ab7d30ec826a9f156b758394af5d22359bddb9"},
+]
+
+[package.dependencies]
+lml = ">=0.0.4"
+
+[package.extras]
+extra = ["chardet"]
+ods = ["pyexcel-ods3 (>=0.6.0)"]
+xls = ["pyexcel-xls (>=0.6.0)"]
+xlsx = ["pyexcel-xlsx (>=0.6.0)"]
+
+[[package]]
+name = "pyexcel-ods"
+version = "0.6.0"
+description = "A wrapper library to read, manipulate and write data in ods format"
+optional = false
+python-versions = ">=3.6"
+groups = ["main"]
+files = [
+    {file = "pyexcel-ods-0.6.0.tar.gz", hash = "sha256:f61b56515fd4ccd4687f0a112422f74ce8535247ad2da49db90038d7e3ed397c"},
+    {file = "pyexcel_ods-0.6.0-py2.py3-none-any.whl", hash = "sha256:0a45acd47cf920c38b52d6005088dbdefa285dab379f24115d1d335ddb0ab7ed"},
+]
+
+[package.dependencies]
+odfpy = ">=1.3.5"
+pyexcel-io = ">=0.6.2"
+
+[[package]]
 name = "typing-extensions"
 version = "4.15.0"
 description = "Backported and Experimental Type Hints for Python 3.9+"
@@ -220,4 +269,4 @@ typing-extensions = ">=4.12.0"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "ea4f9baa8992f0db765ad4c7786abeab5f7b01585dab4fe7d90972540f3a0210"
+content-hash = "c93f76afb63373cc77beca0fd9b5e3d041efa11256d356b1e0ef33d4df452fd7"

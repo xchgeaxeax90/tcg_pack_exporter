@@ -34,3 +34,8 @@ class Bundle(BaseModel):
     characters: list[str]
     sub_bundles: list[str]
     model_config = ConfigDict(populate_by_name=True)
+
+class Pack(BaseModel):
+    name: str
+    cards: list[NyanCard]
+    bundles: list[Bundle]

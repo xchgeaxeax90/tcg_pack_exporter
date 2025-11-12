@@ -1,7 +1,10 @@
 import tkinter as tk
+import logging
 from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
 import os
+
+logger = logging.getLogger(__name__)
 
 # ===== CONFIG =====
 ASPECT_RATIO = (16, 9)  # (width, height)
@@ -114,8 +117,9 @@ class CropTool:
         x1, y1, x2, y2 = [int(c / self.scale) for c in self.crop_coords]
         cropped = self.img.crop((x1, y1, x2, y2)).resize(OUTPUT_SIZE, Image.LANCZOS)
 
-        filename = self.cards[self.current_index].resized_uri
+        filename = self.cards[self.current_index].get_image_filename('.png')
         save_path = os.path.join(self.output_directory, filename)
+        logger.debug(f'{save_path=} {filename=}')
         cropped.save(save_path)
         print(f"Saved: {save_path}")
 
@@ -134,6 +138,7 @@ def run_gui(cards, output_directory):
     root.mainloop()
 
 def crop_images(cards, output_directory, export_prefix):
+    logger.debug(output_directory)
     resize_needed = []
     for card in cards:
         filename = os.path.join(output_directory, card.get_image_filename('.png'))

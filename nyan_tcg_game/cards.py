@@ -8,7 +8,7 @@ invalid_character_selector = re.compile(r'[()\'\"\[\]\{\}]')
 class Rarity(str, Enum):
     COMMON = 'Common'
     RARE = 'Rare'
-    SPECIAL_RARE = 'SpecialRare'
+    SPECIAL_RARE = 'Special Rare'
 
 @dataclass
 class Card:

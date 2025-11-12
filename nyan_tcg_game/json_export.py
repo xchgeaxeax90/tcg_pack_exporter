@@ -12,3 +12,9 @@ def export_card_json(cards, output_filename):
     logger.debug(cards)
     with open(output_filename, 'w') as f:
         json.dump(nyancards, f, default=pydantic_encoder, indent=2)
+
+
+def export_bundle_json(bundles, output_filename):
+    logger.debug(bundles)
+    with open(output_filename, 'w') as f:
+        json.dump(bundles, f, default=pydantic_encoder, indent=2)

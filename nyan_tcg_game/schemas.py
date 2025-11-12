@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from enum import Enum
 from nyan_tcg_game.cards import Card, Rarity
    
@@ -33,3 +33,4 @@ class Bundle(BaseModel):
     bundle_type: BundleType = Field(..., alias='type')
     characters: list[str]
     sub_bundles: list[str]
+    model_config = ConfigDict(populate_by_name=True)

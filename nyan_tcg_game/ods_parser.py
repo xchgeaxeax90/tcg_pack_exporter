@@ -1,4 +1,5 @@
 from pyexcel_ods import get_data
+from nyan_tcg_game.schemas import BundleType
 import itertools
 
 def read_sheet(filename, sheet_name):
@@ -13,3 +14,10 @@ def convert_to_row_dict(data):
 
 def read_card_data(filename):
     return convert_to_row_dict(read_sheet(filename, 'Cards'))
+
+def read_bundle_data(filename, bundle_type: BundleType):
+    if bundle_type == BundleType.CHARACTER:
+        return convert_to_row_dict(read_sheet(filename, 'Character Groups'))
+    elif bundle_type == BundleType.CARD:
+        return convert_to_row_dict(read_sheet(filename, 'Card Groups'))
+    return None

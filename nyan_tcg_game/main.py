@@ -4,9 +4,10 @@ import os
 import nyan_tcg_game.ods_parser as ods_parser
 from nyan_tcg_game.cards import parse_cards
 from nyan_tcg_game.image_files import fix_image_files, download_missing_images
-from nyan_tcg_game.json_export import export_card_json
+from nyan_tcg_game.json_export import export_card_json, export_bundle_json
 from nyan_tcg_game.crop_gui import crop_images
-
+from nyan_tcg_game.bundles import parse_bundles
+from nyan_tcg_game.schemas import BundleType
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -15,23 +16,37 @@ def get_args():
     parser.add_argument('--log-level', type=str, default='INFO', help="Sets log level")
     parser.add_argument('--image-dir', type=str, default='images', help='Path within  export dir to put images into')
     parser.add_argument('--card-file', type=str, default='card_data.json', help='File to export card data to in export directory')
+    parser.add_argument('--bundle-file', type=str, default='bundle_data.json', help='File to export card data to in export directory')
     parser.add_argument('--cache-dir', type=str, default='.cache', help='Directory to cache temporary images')
     return parser.parse_args()
 
 
 def main():
     args = get_args()
+    logging.basicConfig(level=args.log_level)
+
     image_directory = os.path.join(args.export_dir, args.image_dir)
-    output_filename = os.path.join(args.export_dir, args.card_file)
+    card_filename = os.path.join(args.export_dir, args.card_file)
+    bundle_filename = os.path.join(args.export_dir, args.bundle_file)
     download_cache_dir = os.path.join(args.cache_dir, 'downloaded_images')
 
+    # Handle card data
 
-    logging.basicConfig(level=args.log_level)
     card_data = ods_parser.read_card_data(args.ods_input)
     cards = parse_cards(card_data)
     cards = download_missing_images(cards, download_cache_dir)
     cards = crop_images(cards, image_directory)
-    export_card_json(cards, output_filename)
+    export_card_json(cards, card_filename)
+
+    # Handle bundles
+    def parse_bundle_data(bundle_type):
+        bundle_dicts = ods_parser.read_bundle_data(args.ods_input, bundle_type)
+        return parse_bundles(bundle_dicts, bundle_type)
+
+    bundles = parse_bundle_data(BundleType.CARD) + parse_bundle_data(BundleType.CHARACTER)
+    export_bundle_json(bundles, bundle_filename)
+    
+
 
 
 

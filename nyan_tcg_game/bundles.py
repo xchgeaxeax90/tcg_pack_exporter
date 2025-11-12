@@ -37,7 +37,7 @@ def parse_bundles(ods_data: list[dict], bundle_type: BundleType) -> list[Bundle]
         cards = []
         sub_bundles = []
         for entry in entries:
-            if entry.card_name in bundle_dict:
+            if entry.card_name in bundle_dict and entry.card_name != bundle_name:
                 sub_bundles.append(entry.card_name)
             else:
                 cards.append(entry.card_name)

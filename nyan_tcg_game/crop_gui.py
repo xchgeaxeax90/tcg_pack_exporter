@@ -17,6 +17,7 @@ class CropTool:
         self.start_x = self.start_y = None
         self.rect = None
         self.crop_coords = None
+        self.scale = 1.0
 
         os.makedirs(self.output_directory, exist_ok=True)
 
@@ -31,11 +32,15 @@ class CropTool:
         tk.Button(btn_frame, text="Quit", command=root.quit).pack(side="right", padx=5)
 
         # --- Image handling ---
-        self.load_image()
-
+        self.root.bind("<Configure>", self.on_resize)
         self.canvas.bind("<ButtonPress-1>", self.on_press)
         self.canvas.bind("<B1-Motion>", self.on_drag)
         self.canvas.bind("<ButtonRelease-1>", self.on_release)
+
+        self.img = None
+        self.tk_img = None
+        self.display_img = None
+        self.load_image()
 
     def load_image(self):
         if self.current_index >= len(self.cards):
@@ -45,11 +50,28 @@ class CropTool:
 
         path = self.cards[self.current_index].source_uri
         self.img = Image.open(path)
-        self.tk_img = ImageTk.PhotoImage(self.img)
-        self.canvas.delete("all")
-        self.canvas.create_image(0, 0, anchor="nw", image=self.tk_img)
-        self.canvas.config(scrollregion=self.canvas.bbox("all"))
         self.root.title(f"Cropping ({self.current_index+1}/{len(self.cards)}): {os.path.basename(path)}")
+        self.display_image()
+
+    def display_image(self):
+        if not self.img:
+            return
+
+        self.canvas.delete("all")
+        cw = max(self.canvas.winfo_width(), 800)
+        ch = max(self.canvas.winfo_height(), 600)
+
+        iw, ih = self.img.size
+        scale = min(cw/iw, ch/ih)
+        self.scale = scale
+        new_w, new_h = int(iw*scale), int(ih * scale)
+        self.display_img = self.img.resize((new_w, new_h), Image.LANCZOS)
+        self.tk_img = ImageTk.PhotoImage(self.display_img)
+        self.canvas.create_image(0, 0, anchor="nw", image=self.tk_img)
+        self.canvas.image = self.tk_img
+
+    def on_resize(self, event):
+        self.display_image()
 
     def on_press(self, event):
         self.start_x, self.start_y = event.x, event.y
@@ -89,7 +111,7 @@ class CropTool:
             messagebox.showwarning("No selection", "Please draw a crop rectangle first.")
             return
 
-        x1, y1, x2, y2 = [int(c) for c in self.crop_coords]
+        x1, y1, x2, y2 = [int(c / self.scale) for c in self.crop_coords]
         cropped = self.img.crop((x1, y1, x2, y2)).resize(OUTPUT_SIZE, Image.LANCZOS)
 
         filename = self.cards[self.current_index].resized_uri

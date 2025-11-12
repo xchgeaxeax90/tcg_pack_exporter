@@ -1,13 +1,9 @@
 from pydantic import BaseModel, Field
 from enum import Enum
-
-class Rarity(str, Enum):
-    COMMON = 'Common'
-    RARE = 'Rare'
-    SPECIAL_RARE = 'SpecialRare'
+from nyan_tcg_game.cards import Card, Rarity
    
 
-class Card(BaseModel):
+class NyanCard(BaseModel):
     name: str
     subtext: str
     character: str
@@ -15,6 +11,17 @@ class Card(BaseModel):
     image_credit: str | None
     image_source: str | None
     rarity: Rarity
+
+    @classmethod
+    def from_card(cls, card):
+        return cls(
+            name=card.get_card_name(),
+            subtext=card.company,
+            character=card.name,
+            rarity=card.rarity,
+            image_url=card.resized_uri,
+            image_credit=card.image_credit,
+            image_source=card.image_fetch_url)
 
 
 class BundleType(str, Enum):

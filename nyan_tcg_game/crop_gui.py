@@ -8,6 +8,8 @@ logger = logging.getLogger(__name__)
 
 # ===== CONFIG =====
 OUTPUT_SIZE = (550, 750)  # target size after crop/resize
+VISIBLE_SIZE = (534, 688)
+VISIBLE_RECT_OFFSETS = (-8, -55, 8, 8)
 OUTPUT_DIR = "cropped_output"
 
 class CropTool:
@@ -94,7 +96,7 @@ class CropTool:
         # Maintain aspect ratio
         dx = event.x - self.start_x
         dy = event.y - self.start_y
-        target_ratio = OUTPUT_SIZE[0] / OUTPUT_SIZE[1]
+        target_ratio = VISIBLE_SIZE[0] / VISIBLE_SIZE[1]
 
         if abs(dx) > abs(dy):
             width = dx
@@ -115,14 +117,19 @@ class CropTool:
             x1, y1, x2, y2 = self.canvas.coords(self.rect)
             ow, oh = self.coord_offset
             self.crop_coords = (x1 - ow, y1 - oh, x2 - ow, y2 - oh)
-            logger.debug(f"{self.crop_coords=}")
 
     def crop_and_next(self):
         if not self.crop_coords:
             messagebox.showwarning("No selection", "Please draw a crop rectangle first.")
             return
 
-        x1, y1, x2, y2 = [int(c / self.scale) for c in self.crop_coords]
+        x1, y1, x2, y2 = coords = [int(c / self.scale) for c in self.crop_coords]
+
+        # Adjust image crop coordinates so cropped image corresponds to visible region on card
+        w, h = (x2-x1, y2-y1)
+        scale = w / VISIBLE_SIZE[0]
+        x1, y1, x2, y2 = coords = tuple(map(lambda x, y: x + (y*scale), coords, VISIBLE_RECT_OFFSETS))
+
         cropped = self.img.crop((x1, y1, x2, y2)).resize(OUTPUT_SIZE, Image.LANCZOS)
 
         filename = self.cards[self.current_index].get_image_filename('.png')

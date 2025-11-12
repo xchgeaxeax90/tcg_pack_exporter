@@ -8,6 +8,7 @@ from nyan_tcg_game.json_export import export_pack_json
 from nyan_tcg_game.crop_gui import crop_images
 from nyan_tcg_game.bundles import parse_bundles
 from nyan_tcg_game.schemas import BundleType, Pack, NyanCard
+from nyan_tcg_game.card_preview import generate_previews
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -18,12 +19,14 @@ def get_args():
     parser.add_argument('--image-dir', type=str, default='images', help='Path within  export dir to put images into')
     parser.add_argument('--pack-file', type=str, default='pack_data.json', help='File to export card data to in export directory')
     parser.add_argument('--cache-dir', type=str, default='.cache', help='Directory to cache temporary images')
+    parser.add_argument('-p', '--preview', action='store_true', help='Preview card frames')
     return parser.parse_args()
 
 
 def main():
     args = get_args()
     logging.basicConfig(level=args.log_level)
+    logging.getLogger("nyan_tcg_game.card_preview").setLevel(logging.DEBUG)
 
     image_directory = os.path.join(args.export_dir, args.image_dir)
     pack_filename = os.path.join(args.export_dir, args.pack_file)
@@ -49,6 +52,9 @@ def main():
     pack = Pack(name=args.pack_name, cards=nyancards, bundles=bundles)
     export_pack_json(pack, pack_filename)
     
+    if args.preview:
+        preview_dir = os.path.join(args.export_dir, "previews")
+        generate_previews(cards, args.export_dir, preview_dir)
 
 
 

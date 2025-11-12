@@ -10,6 +10,14 @@ class Rarity(str, Enum):
     RARE = 'Rare'
     SPECIAL_RARE = 'Special Rare'
 
+    @property
+    def short_name(self):
+        if self == self.COMMON:
+            return "C"
+        elif self == self.RARE:
+            return "R"
+        return "SR"
+
 @dataclass
 class Card:
     name: str

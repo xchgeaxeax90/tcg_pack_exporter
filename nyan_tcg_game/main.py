@@ -3,8 +3,9 @@ import logging
 import os
 import nyan_tcg_game.ods_parser as ods_parser
 from nyan_tcg_game.cards import parse_cards
-from nyan_tcg_game.image_files import fix_image_files
+from nyan_tcg_game.image_files import fix_image_files, download_missing_images
 from nyan_tcg_game.json_export import export_card_json
+from nyan_tcg_game.crop_gui import crop_images
 
 
 def get_args():
@@ -14,6 +15,7 @@ def get_args():
     parser.add_argument('--log-level', type=str, default='INFO', help="Sets log level")
     parser.add_argument('--image-dir', type=str, default='images', help='Path within  export dir to put images into')
     parser.add_argument('--card-file', type=str, default='card_data.json', help='File to export card data to in export directory')
+    parser.add_argument('--cache-dir', type=str, default='.cache', help='Directory to cache temporary images')
     return parser.parse_args()
 
 
@@ -21,11 +23,14 @@ def main():
     args = get_args()
     image_directory = os.path.join(args.export_dir, args.image_dir)
     output_filename = os.path.join(args.export_dir, args.card_file)
+    download_cache_dir = os.path.join(args.cache_dir, 'downloaded_images')
+
 
     logging.basicConfig(level=args.log_level)
     card_data = ods_parser.read_card_data(args.ods_input)
     cards = parse_cards(card_data)
-    cards = fix_image_files(cards, image_directory)
+    cards = download_missing_images(cards, download_cache_dir)
+    cards = crop_images(cards, image_directory)
     export_card_json(cards, output_filename)
 
 

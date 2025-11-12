@@ -27,7 +27,7 @@ def download_url_for_empty_filename(card, image_dir):
             raise e
     else:
         logger.debug(f'Skipping {output_filename} as it already exists')
-    card.source_uri = image_filename
+    card.source_uri = output_filename
     return card
 
 def copy_existing_filename(card, image_dir):
@@ -43,6 +43,9 @@ def copy_existing_filename(card, image_dir):
     card.image_url = image_filename
     return card
     
+def download_missing_images(cards, download_dir):
+    os.makedirs(download_dir, exist_ok=True)
+    return list(map(lambda c: download_url_for_empty_filename(c, download_dir), cards))
 
 def fix_image_files(cards, image_dir):
     os.makedirs(image_dir, exist_ok=True)

@@ -4,7 +4,7 @@ def dict_to_card(data):
     if not data['Rarity']:
         return None
     if data['Variant']:
-        name = data['Name'] + data['Variant']
+        name = f"{data['Name']} ({data['Variant']})"
     else:
         name = data['Name']
 

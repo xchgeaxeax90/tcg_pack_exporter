@@ -1,5 +1,6 @@
 import re
 import os
+import shutil
 import logging
 import urllib.request
 
@@ -11,7 +12,10 @@ def get_card_filename(card):
     cleaned_name = invalid_character_selector.sub('', card.name)
     logger.debug(cleaned_name)
     filename_prefix = cleaned_name.replace(' ', '_').lower()
-    extension = os.path.splitext(card.image_source)[1]
+    if card.image_url:
+        extension = os.path.splitext(card.image_url)[1]
+    else:
+        extension = os.path.splitext(card.image_source)[1]
     return filename_prefix + extension
 
 
@@ -32,9 +36,24 @@ def download_url_for_empty_filename(card, image_dir):
     card.image_url = image_filename
     return card
 
+def copy_existing_filename(card, image_dir):
+    """For cards with an image_url (that's the filename) set, this
+    fixes the name to the format nyan specifies and copies it into the
+    export directory"""
+    if not card.image_url:
+        return card
+    image_filename = get_card_filename(card)
+    output_filename = os.path.join(image_dir, image_filename)
+    logger.debug(f'Copying {card.image_url} to {output_filename}')
+    shutil.copy(card.image_url, output_filename)
+    card.image_url = image_filename
+    return card
+    
+
 def fix_image_files(cards, image_dir):
     os.makedirs(image_dir, exist_ok=True)
     def run(card):
+        card = copy_existing_filename(card, image_dir)
         return download_url_for_empty_filename(card, image_dir)
 
     return list(map(run, cards))

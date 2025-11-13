@@ -77,3 +77,95 @@ and Toof" that will match the cards:
 
 But will not match other cards for Pomu or Finana.
    
+** Exporting a Card Pack
+
+This section assumes the user knows how to install and run python
+programs, as well as use git. It is not intended as a general purpose walkthrough.
+
+This program uses poetry, which can be installed from here: https://python-poetry.org/docs/#installation
+
+*** Download and Setup
+
+Run:
+
+#+BEGIN_SRC console
+  git clone https://github.com/xchgeaxeax90/tcg_pack_exporter.git
+  cd tcg_pack_exporter
+  poetry install
+#+END_SRC
+
+*** Running
+
+To export a pack, run the tool by passing in the path to the
+spreadsheet containing the pack's data (either .xlsx or .ods format),
+a directory to export the pack data to, and the pack name:
+#+BEGIN_SRC console
+  poetry run python main.py path/to/spreadsheet.xlsx export/my_bundle "My Pack"
+#+END_SRC
+
+**** Cropping
+The tool should download the images from the URLs in the spreadsheet,
+then open a GUI to allow you to crop the images to the dimensions
+required by the TCG bot.
+
+[[./documentation/crop_gui.png]]
+
+The GUI should look like the above photo, with an image from the
+spreadsheet shown in the center, and 3 buttons at the bottom.
+
+Clicking and dragging on the image will display two rectangles, blue
+and red. The red rectangle represents the region of the image that
+will be cropped to the 550x750 dimensions required by Nyan's TCG
+bot. The blue region represents what will actually be visible on the
+card front, when the card border and name textbox are added. The mouse
+controls the position of the blue visible rectangle, while the red
+crop rectangle is dynamically sized relative to the blue
+rectangle. Note that while the blue rectangle should not go outside
+the bounds of the image, the red crop rectangle can. 
+
+[[./documentation/sennzai_crop.png]]
+For instance, when cropping the image of Sennzai above, I selected a
+region that places the blue visible area region very close to the
+borders of the image, such that the red crop rectangle ends up outside
+the border of the image. This results in an exported image that looks
+like this:
+
+[[./documentation/sennzai_export.png]]
+
+Notice that the top of the image is black/transparent, since the
+boundary of the red crop rectangle extended outside of the bounds of
+the image. This region will be covered up by the nameplate, so it
+should not be an issue.
+
+*** Previews
+This tool has the ability to generate previews of what the trading
+cards might look like when imported into nyan's bot. The previews are
+not intended to look exactly like the cards in game, but to make sure
+that the visible area of the card looks ok. Thus things like shading,
+colors, image radii, antialiasing are all wrong, however the position
+and size of the image border and text boxes should be correct to +/- 1
+pixel.
+
+Previews of what the generated cards will look like are generated in
+the =export/my_bundle/previews= directory when the =-p= or =--preview=
+flag is passed to the tool, like so:
+
+#+BEGIN_SRC console
+  poetry run python main.py path/to/spreadsheet.xlsx export/my_bundle "My Pack" --preview
+#+END_SRC
+
+For example, the generated preview of the above image looks like this:
+
+[[./documentation/sennzai_preview.png]]
+
+Note that the black area at the top of the image is covered up by the
+top nameplate.
+
+*** Data Export
+
+After running, the tool should create a json file at
+=export/my_bundle/pack_data.json= containing the card and bundle data
+for the pack. It will also create a directory
+=export/my_bundle/images= containing the cropped and resized images
+for the card fronts. This file and this directory should be all that
+is required to import the data into nyan's discord bot.

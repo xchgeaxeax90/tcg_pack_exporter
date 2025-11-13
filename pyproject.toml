@@ -1,5 +1,5 @@
 [project]
-name = "nyan-tcg-game"
+name = "tcg-pack-exporter"
 version = "0.1.0"
 description = ""
 authors = [
@@ -16,6 +16,7 @@ dependencies = [
 ]
 
 [tool.poetry]
+package-mode = false
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

@@ -1,0 +1,79 @@
+* Pack Creation Tool for Nyan's TCG
+This program allows the user to:
+ - Import a spreadsheet of card entries to create into a trading card pack
+ - Downloads images for those cards
+ - Displays a GUI to crop those cards to the correct dimensions
+ - Generates a folder containing the cropped images and json metadata for a new trading card pack
+
+
+** Creating a New Pack
+Create a copy of or download this spreadsheet: https://docs.google.com/spreadsheets/d/1Vi_3anCozG1palF7mx17x5o_0OgBupKX6wqIRjM615A/edit?usp=sharing
+
+The spreadsheet contains 3 sheets:
+ - Cards - Add individual cards to this table
+ - Character Groups - Create bundles that accept any card (common/rare/specialrare) of specific characters
+ - Card Groups - Create bundles that only accept specific cards
+
+Additional sheets can be added, for taking notes, computing
+statistics, whatever, but these 3 sheets and their column structure
+must not be removed or altered.
+
+*** Creating Cards
+
+Each entry in the cards sheet must contain data in the following columns
+ - Name - The name of the character. This will appear on the card's top text box
+ - Variant - The variant of the card, such as "Bunnygirl", "Wine",
+   "Cheeky", or blank if the card does not have a variant. If this
+   field is not blank, the variant will be appended to the top text
+   box in parenthesis (i.e. setting this to "Cheeky" will create "Character Name (Cheeky)" for the card textbox)
+ - Company - The company the character is associated with, or "Indie
+   VTuber" if the person is independent. This will appear in the
+   bottom left text box on the card
+ - Rarity - Must be one of "Common", "Rare", or "Special Rare"
+ - Credit - The twitter handle, pixiv username, or other social media
+   info for the artist that created the card image. Can be blank
+ - URL - The URL to download the card's image from. This can be blank,
+   but if it is set it should point directly to an image, not
+   something like a tweet or webpage.
+ - Filename - If the card art does not exist online or must be edited
+   before it can be imported into the pack generator, then this field
+   can be used to specify where the card is on your hard drive. If
+   this pack is shared with someone else (like Nyan or me), this file
+   will need to be exported along with the spreadsheet
+ - Notes - Ignored by the tool, space for any notes you might want to
+   have on the image
+
+Some examples are shown in the template already. However, if I were to want to add the following tweet as a card
+https://x.com/Sai_Ca5/status/1654690810800279554?s=20
+
+I would enter it like so:
+| Name    | Variant | Company       | Rarity | Credit   | URL | Filename | Notes |
+|---------+---------+---------------+--------+----------+-----+----------+-------|
+| Sennzai | VTTRACT | Indie VSinger | Rare   | @Sai_Ca5 | https://pbs.twimg.com/media/FvakLWMaAAAcB5d?format=jpg&name=4096x4096    |          |       |
+
+To obtain the URL I opened the tweet, right clicked and clicked "Copy
+Image Link". Specifically, URLs such as
+https://x.com/Sai_Ca5/status/1654690810800279554/photo/1 will not
+work, the URL must link directly to the image file
+
+*** Creating Bundles
+
+Bundles are created by entering mappings between cards or characters
+and the bundle name in the "Card Groups" or "Character Groups" sheets
+in the spreadsheet.
+
+The "Character Groups" sheet creates bundles that will match any card
+containing specific characters. For instance, the template defines one
+bundle "Lazulight" which will match any cards in the pack for:
+ - Pomu Rainpuff
+ - Finana Ryugu
+ - Elira Pendora
+
+The "Card Groups" sheet creates bundles that only match specific cards
+in the pack. For instance, the template defines a bundle named "Tummy
+and Toof" that will match the cards:
+ - Pomu Rainpuff (Toof)
+ - Finana Ryugu (Tummy)
+
+But will not match other cards for Pomu or Finana.
+   

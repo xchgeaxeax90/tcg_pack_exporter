@@ -10,14 +10,17 @@ from nyan_tcg_game.bundles import parse_bundles
 from nyan_tcg_game.schemas import BundleType, Pack, NyanCard
 from nyan_tcg_game.card_preview import generate_previews
 
+PACK_FILE = 'pack_data.json'
+IMAGE_DIR = 'images'
+DOWNLOAD_CACHE_DIR = 'downloaded_images'
+
+
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('ods_input', type=str, help="ODS sheet of input data")
     parser.add_argument('export_dir', type=str, help="Directory to export json and images to")
     parser.add_argument('pack_name', type=str, help="The name of the pack edition")
     parser.add_argument('--log-level', type=str, default='INFO', help="Sets log level")
-    parser.add_argument('--image-dir', type=str, default='images', help='Path within  export dir to put images into')
-    parser.add_argument('--pack-file', type=str, default='pack_data.json', help='File to export card data to in export directory')
     parser.add_argument('--cache-dir', type=str, default='.cache', help='Directory to cache temporary images')
     parser.add_argument('-p', '--preview', action='store_true', help='Preview card frames')
     return parser.parse_args()
@@ -27,9 +30,9 @@ def main():
     args = get_args()
     logging.basicConfig(level=args.log_level)
 
-    image_directory = os.path.join(args.export_dir, args.image_dir)
-    pack_filename = os.path.join(args.export_dir, args.pack_file)
-    download_cache_dir = os.path.join(args.cache_dir, 'downloaded_images')
+    image_directory = os.path.join(args.export_dir, IMAGE_DIR)
+    pack_filename = os.path.join(args.export_dir, PACK_FILE)
+    download_cache_dir = os.path.join(args.cache_dir, DOWNLOAD_CACHE_DIR)
 
     # Handle card data
 

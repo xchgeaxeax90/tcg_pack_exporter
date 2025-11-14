@@ -5,8 +5,8 @@ from nyan_tcg_game.cards import Card, Rarity
 
 class NyanCard(BaseModel):
     name: str
-    subtext: str
-    character: str
+    subtext: str | None
+    character: str | None
     image_url: str | None
     image_credit: str | None
     image_source: str | None

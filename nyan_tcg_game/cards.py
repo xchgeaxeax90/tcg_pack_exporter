@@ -25,8 +25,9 @@ class Card:
     company: str
     rarity: Rarity
     image_credit: str
-    source_uri: str | None # Stores the image path on the filesystem. For tweet images, this is blank until the image is fetched
-    image_fetch_url: str | None # If an image is fetched from the web, this is the URL it's fetched from
+    source_url: str | None # Stores the source link for the image - the tweet or webpage it came from
+    image_file_uri: str | None # Stores the image file location as a URI
+    local_image_path: str | None # Once an image has been fetched from the image file URI, its path is stored here
     resized_uri: str | None # Stores the image path after it has been resized
 
     @property
@@ -53,8 +54,9 @@ def dict_to_card(data):
         company=data['Company'],
         rarity=Rarity(data['Rarity']),
         image_credit=data['Credit'],
-        source_uri=data['Filename'],
-        image_fetch_url=data['URL'],
+        source_url=data['Source URL'],
+        image_file_uri=data['File URI'],
+        local_image_path=None,
         resized_uri=None)
 
 def parse_cards(data):

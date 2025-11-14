@@ -67,7 +67,7 @@ class CropTool:
             self.root.quit()
             return
 
-        path = self.cards[self.current_index].source_uri
+        path = self.cards[self.current_index].local_image_path
         self.img = Image.open(path)
         self.root.title(f"Cropping ({self.current_index+1}/{len(self.cards)}): {os.path.basename(path)}")
         self.display_image()

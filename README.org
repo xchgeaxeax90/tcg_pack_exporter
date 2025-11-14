@@ -54,7 +54,7 @@ I would enter it like so:
 To obtain the URL I opened the tweet, right clicked and clicked "Copy
 Image Link". Specifically, URLs such as
 https://x.com/Sai_Ca5/status/1654690810800279554/photo/1 will not
-work, the URL must link directly to the image file
+work, the URL must link directly to the image file.
 
 *** Creating Bundles
 

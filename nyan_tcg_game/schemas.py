@@ -21,7 +21,7 @@ class NyanCard(BaseModel):
             rarity=card.rarity,
             image_url=card.resized_uri,
             image_credit=card.image_credit,
-            image_source=card.image_fetch_url)
+            image_source=card.source_url)
 
 
 class BundleType(str, Enum):

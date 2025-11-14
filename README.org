@@ -32,14 +32,13 @@ Each entry in the cards sheet must contain data in the following columns
  - Rarity - Must be one of "Common", "Rare", or "Special Rare"
  - Credit - The twitter handle, pixiv username, or other social media
    info for the artist that created the card image. Can be blank
- - URL - The URL to download the card's image from. This can be blank,
-   but if it is set it should point directly to an image, not
-   something like a tweet or webpage.
- - Filename - If the card art does not exist online or must be edited
-   before it can be imported into the pack generator, then this field
-   can be used to specify where the card is on your hard drive. If
-   this pack is shared with someone else (like Nyan or me), this file
-   will need to be exported along with the spreadsheet
+ - Source URL - The URL to be displayed to the user as an image
+   credit. Should point to a tweet or a webpage if possible
+ - File URI - The URI or URL of the actual image file. For images
+   found online, this should be the url of the actual file, not the
+   url of a tweet or webpage. For files stored locally, this should be
+   the path to the file prefixed with 'file:' for relative paths or
+   'file://' for absolute paths
  - Notes - Ignored by the tool, space for any notes you might want to
    have on the image
 
@@ -47,14 +46,14 @@ Some examples are shown in the template already. However, if I were to want to a
 https://x.com/Sai_Ca5/status/1654690810800279554?s=20
 
 I would enter it like so:
-| Name    | Variant | Company       | Rarity | Credit   | URL | Filename | Notes |
-|---------+---------+---------------+--------+----------+-----+----------+-------|
-| Sennzai | VTTRACT | Indie VSinger | Rare   | @Sai_Ca5 | https://pbs.twimg.com/media/FvakLWMaAAAcB5d?format=jpg&name=4096x4096    |          |       |
+| Name    | Variant | Company       | Rarity | Credit   | Source URL                                            | FILE URI                                                              | Notes |
+|---------+---------+---------------+--------+----------+-------------------------------------------------------+-----------------------------------------------------------------------+-------|
+| Sennzai | VTTRACT | Indie VSinger | Rare   | @Sai_Ca5 | https://x.com/Sai_Ca5/status/1654690810800279554 | https://pbs.twimg.com/media/FvakLWMaAAAcB5d?format=jpg&name=4096x4096 |       |
 
 To obtain the URL I opened the tweet, right clicked and clicked "Copy
 Image Link". Specifically, URLs such as
 https://x.com/Sai_Ca5/status/1654690810800279554/photo/1 will not
-work, the URL must link directly to the image file.
+work as a File URI, the URL must link directly to the image file.
 
 *** Creating Bundles
 

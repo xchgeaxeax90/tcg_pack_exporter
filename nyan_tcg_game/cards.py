@@ -1,9 +1,12 @@
 from dataclasses import dataclass
 from enum import Enum
 import re
+import logging
+from PIL import ImageColor
 
 invalid_character_selector = re.compile(r'[()\'\"\[\]\{\}]')
 
+logger = logging.getLogger(__name__)
 
 class Rarity(str, Enum):
     COMMON = 'Common'
@@ -26,9 +29,11 @@ class Card:
     rarity: Rarity
     image_credit: str
     source_url: str | None # Stores the source link for the image - the tweet or webpage it came from
-    image_file_uri: str | None # Stores the image file location as a URI
+    image_file_uri: str # Stores the image file location as a URI
     local_image_path: str | None # Once an image has been fetched from the image file URI, its path is stored here
     resized_uri: str | None # Stores the image path after it has been resized
+    background_fill: str # For transparent images, stores the background color to fill with
+
 
     @property
     def card_name(self):
@@ -47,6 +52,10 @@ def dict_to_card(data):
         name = f"{data['Name']} ({data['Variant']})"
     else:
         name = data['Name']
+    if 'Background Color' in data and data['Background Color']:
+        background_fill = ImageColor.getrgb(data['Background Color'])
+    else:
+        background_fill = (255, 255, 255, 255)
 
     return Card(
         name=data['Name'],
@@ -57,7 +66,9 @@ def dict_to_card(data):
         source_url=data['Source URL'],
         image_file_uri=data['File URI'],
         local_image_path=None,
-        resized_uri=None)
+        resized_uri=None,
+        background_fill=background_fill
+    )
 
 def parse_cards(data):
     return filter(None, map(dict_to_card, data))

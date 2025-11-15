@@ -1,7 +1,7 @@
 import tkinter as tk
 import logging
 from tkinter import filedialog, messagebox
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageColor
 import os
 
 logger = logging.getLogger(__name__)
@@ -49,6 +49,9 @@ class CropTool:
         tk.Button(btn_frame, text="Crop & Next", command=self.crop_and_next).pack(side="left", padx=5)
         tk.Button(btn_frame, text="Skip", command=self.next_image).pack(side="left", padx=5)
         tk.Button(btn_frame, text="Quit", command=root.quit).pack(side="right", padx=5)
+        self.color_input = tk.Text(btn_frame, height=1, width=10)
+        self.color_input.pack(side="right", padx=5)
+        self.color_input.bind("<<Modified>>", self.on_color_update)
 
         # --- Image handling ---
         self.root.bind("<Configure>", self.on_resize)
@@ -66,9 +69,15 @@ class CropTool:
             messagebox.showinfo("Done", "All images processed!")
             self.root.quit()
             return
+        card = self.cards[self.current_index]
+        logger.debug(f"Loading {card=}")
 
-        path = self.cards[self.current_index].local_image_path
-        self.img = Image.open(path)
+        path = card.local_image_path
+        top_img = Image.open(path).convert("RGBA")
+        bottom_img = Image.new(mode="RGBA", size=top_img.size, color=card.background_fill)
+        self.img = Image.alpha_composite(bottom_img, top_img)
+        #self.img.paste(top_img, (0, 0), top_img)
+
         self.root.title(f"Cropping ({self.current_index+1}/{len(self.cards)}): {os.path.basename(path)}")
         self.display_image()
 
@@ -94,6 +103,21 @@ class CropTool:
         self.canvas.image = self.tk_img
 
         self.coord_offset = (offsetx, offsety)
+
+    def on_color_update(self, event):
+        text_widget = event.widget
+        if text_widget.edit_modified():
+            color_str = text_widget.get("1.0", "end-1c")
+            try:
+                color = ImageColor.getrgb(color_str)
+                logger.debug(f"Setting color to {color}")
+                self.cards[self.current_index].background_fill = color
+                self.load_image()
+            except:
+                pass
+
+            text_widget.edit_modified(False)   # MUST reset the flag!
+
 
     def on_resize(self, event):
         self.display_image()

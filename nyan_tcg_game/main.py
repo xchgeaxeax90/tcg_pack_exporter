@@ -9,8 +9,10 @@ from nyan_tcg_game.crop_gui import crop_images
 from nyan_tcg_game.bundles import parse_bundles
 from nyan_tcg_game.schemas import BundleType, Pack, NyanCard
 from nyan_tcg_game.card_preview import generate_previews
+from nyan_tcg_game.stats import generate_stats
 
 PACK_FILE = 'pack_data.json'
+STATS_FILE = 'pack_stats.txt'
 IMAGE_DIR = 'images'
 DOWNLOAD_CACHE_DIR = 'downloaded_images'
 
@@ -33,6 +35,7 @@ def main():
 
     image_directory = os.path.join(args.export_dir, IMAGE_DIR)
     pack_filename = os.path.join(args.export_dir, PACK_FILE)
+    stats_filename = os.path.join(args.export_dir, STATS_FILE)
     download_cache_dir = os.path.join(args.cache_dir, DOWNLOAD_CACHE_DIR)
 
     # Handle card data
@@ -54,6 +57,7 @@ def main():
 
     pack = Pack(name=args.pack_name, cards=nyancards, bundles=bundles)
     export_pack_json(pack, pack_filename)
+    generate_stats(pack, stats_filename)
     
     if args.preview:
         preview_dir = os.path.join(args.export_dir, "previews")

@@ -25,6 +25,7 @@ class Rarity(str, Enum):
 class Card:
     name: str
     variant: str | None
+    character: str | None
     company: str
     rarity: Rarity
     image_credit: str
@@ -57,9 +58,12 @@ def dict_to_card(data):
     else:
         background_fill = (255, 255, 255, 255)
 
+    character = data['Name'].strip() if not data.get("Group") else None
+
     return Card(
-        name=data['Name'],
+        name=data['Name'].strip(),
         variant=data['Variant'],
+        character=character,
         company=data['Company'],
         rarity=Rarity(data['Rarity']),
         image_credit=data['Credit'],

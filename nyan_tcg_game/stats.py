@@ -41,7 +41,7 @@ def print_bundle_membership(stats_fp):
     ''').fetchall()
     stats_fp.write('Number of bundles per character:\n')
     table = PrettyTable()
-    table.field_names = ["Character Name", "Total Count", "Char Bundles", "Card Bundles"]
+    table.field_names = ["Character Name", "Total", "Char", "Card"]
     for row in results:
         table.add_row(row)
     stats_fp.write(str(table))
@@ -64,6 +64,18 @@ def print_character_rarities(stats_fp):
     stats_fp.write(str(table))
     stats_fp.write('\n')
     
+def print_subtexts(stats_fp):
+    results = db.execute('''
+    SELECT cards.subtext, COUNT(DISTINCT cards.character) FROM cards GROUP BY cards.subtext;
+    ''').fetchall()
+    stats_fp.write('Subtext/Company counts:\n')
+    table = PrettyTable()
+    table.field_names = ["Subtext", "Count"]
+    for row in results:
+        table.add_row(row)
+    stats_fp.write(str(table))
+    stats_fp.write('\n')
+    
 
 def generate_stats(pack: Pack, stats_file: str):
     create_db()
@@ -72,3 +84,5 @@ def generate_stats(pack: Pack, stats_file: str):
         print_bundle_membership(f)
         f.write('\n\n')
         print_character_rarities(f)
+        f.write('\n\n')
+        print_subtexts(f)

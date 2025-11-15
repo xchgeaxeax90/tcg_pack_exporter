@@ -17,7 +17,7 @@ class NyanCard(BaseModel):
         return cls(
             name=card.card_name,
             subtext=card.company,
-            character=card.name,
+            character=card.character,
             rarity=card.rarity,
             image_url=card.resized_uri,
             image_credit=card.image_credit,

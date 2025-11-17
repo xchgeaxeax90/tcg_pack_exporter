@@ -41,14 +41,17 @@ Each entry in the cards sheet must contain data in the following columns
    'file://' for absolute paths
  - Notes - Ignored by the tool, space for any notes you might want to
    have on the image
+ - Group - Set to 1 or TRUE if the card contains multiple characters
+   (i.e. Pomu & Finana). This will disable the character field for
+   this card so it doesn't count for character packs
 
 Some examples are shown in the template already. However, if I were to want to add the following tweet as a card
 https://x.com/Sai_Ca5/status/1654690810800279554?s=20
 
 I would enter it like so:
-| Name    | Variant | Company       | Rarity | Credit   | Source URL                                            | FILE URI                                                              | Notes |
-|---------+---------+---------------+--------+----------+-------------------------------------------------------+-----------------------------------------------------------------------+-------|
-| Sennzai | VTTRACT | Indie VSinger | Rare   | @Sai_Ca5 | https://x.com/Sai_Ca5/status/1654690810800279554 | https://pbs.twimg.com/media/FvakLWMaAAAcB5d?format=jpg&name=4096x4096 |       |
+| Name    | Variant | Company       | Rarity | Credit   | Source URL                                       | FILE URI                                                              | Notes | Group |
+|---------+---------+---------------+--------+----------+--------------------------------------------------+-----------------------------------------------------------------------+-------+-------|
+| Sennzai | VTTRACT | Indie VSinger | Rare   | @Sai_Ca5 | https://x.com/Sai_Ca5/status/1654690810800279554 | https://pbs.twimg.com/media/FvakLWMaAAAcB5d?format=jpg&name=4096x4096 |       |       |
 
 To obtain the URL I opened the tweet, right clicked and clicked "Copy
 Image Link". Specifically, URLs such as

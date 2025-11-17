@@ -95,7 +95,7 @@ class CropTool:
         self.scale = scale
         new_w, new_h = int(iw*scale), int(ih * scale)
 
-        offsetx, offsety = (cw // 2 - new_w, 0)
+        offsetx, offsety = ((cw - new_w) // 2, 0)
 
         self.display_img = self.img.resize((new_w, new_h), Image.LANCZOS)
         self.tk_img = ImageTk.PhotoImage(self.display_img)

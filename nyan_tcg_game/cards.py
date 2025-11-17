@@ -53,10 +53,7 @@ def dict_to_card(data):
         name = f"{data['Name']} ({data['Variant']})"
     else:
         name = data['Name']
-    if 'Background Color' in data and data['Background Color']:
-        background_fill = ImageColor.getrgb(data['Background Color'])
-    else:
-        background_fill = (255, 255, 255, 255)
+    background_fill = (255, 255, 255, 0)
 
     character = data['Name'].strip() if not data.get("Group") else None
 

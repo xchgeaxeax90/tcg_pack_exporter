@@ -37,7 +37,8 @@ def print_bundle_membership(stats_fp):
         LEFT JOIN character_bundles ON characters.character = character_bundles.character_name
         LEFT JOIN cards ON cards.character = characters.character
         LEFT JOIN card_bundles ON cards.name = card_bundles.card_name
-        GROUP BY characters.character;
+    WHERE cards.character IS NOT NULL
+    GROUP BY characters.character ;
     ''').fetchall()
     stats_fp.write('Number of bundles per character:\n')
     table = PrettyTable()
@@ -55,6 +56,7 @@ def print_character_rarities(stats_fp):
     SUM(CASE WHEN ca.rarity = 'Special Rare' THEN 1 ELSE 0 END) as special_rare_count
     FROM characters ch
     LEFT JOIN cards ca ON ca.character = ch.character
+    WHERE ch.character IS NOT NULL
     GROUP BY ch.character ORDER BY ch.character''').fetchall()
     stats_fp.write('Rarities per character:\n')
     table = PrettyTable()
@@ -66,7 +68,9 @@ def print_character_rarities(stats_fp):
     
 def print_subtexts(stats_fp):
     results = db.execute('''
-    SELECT cards.subtext, COUNT(DISTINCT cards.character) FROM cards GROUP BY cards.subtext;
+    SELECT cards.subtext, COUNT(DISTINCT cards.character) FROM cards
+    WHERE cards.subtext IS NOT NULL
+    GROUP BY cards.subtext;
     ''').fetchall()
     stats_fp.write('Subtext/Company counts:\n')
     table = PrettyTable()
@@ -75,6 +79,21 @@ def print_subtexts(stats_fp):
         table.add_row(row)
     stats_fp.write(str(table))
     stats_fp.write('\n')
+
+def print_totals(stats_fp):
+    results = db.execute('''
+    SELECT COUNT(*), COUNT(DISTINCT cards.character) FROM cards;''').fetchone()
+    bundle_results = db.execute('''
+    SELECT COUNT(*) FROM bundles;''').fetchone()
+
+    stats_fp.write("Totals:\n")
+    table = PrettyTable()
+    table.field_names = ["Item", "Total"]
+    table.add_row(["Cards", results[0]])
+    table.add_row(["Characters", results[1]])
+    table.add_row(["Bundles", bundle_results[0]])
+    stats_fp.write(str(table))
+    stats_fp.write("\n")
     
 
 def generate_stats(pack: Pack, stats_file: str):
@@ -86,3 +105,5 @@ def generate_stats(pack: Pack, stats_file: str):
         print_character_rarities(f)
         f.write('\n\n')
         print_subtexts(f)
+        f.write('\n\n')
+        print_totals(f)

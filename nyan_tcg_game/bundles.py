@@ -49,6 +49,8 @@ def parse_bundles(ods_data: list[dict],
                 cards.append(entry.card_name)
             elif entry.bundle_type == BundleType.CHARACTER and entry.name in valid_characters:
                 characters.append(entry.card_name)
+            elif entry.bundle_type == BundleType.BUNDLE:
+                sub_bundles.append(entry.name)
         logger.debug(cards)
         if cards or characters or sub_bundles:
             bundles.append(Bundle(name=bundle_name,

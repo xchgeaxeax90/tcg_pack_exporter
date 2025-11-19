@@ -27,6 +27,7 @@ class NyanCard(BaseModel):
 class BundleType(str, Enum):
     CHARACTER = 'character'
     CARD = 'card'
+    BUNDLE = 'bundle'
 
 class Bundle(BaseModel):
     name: str

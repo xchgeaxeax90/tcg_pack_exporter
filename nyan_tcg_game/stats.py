@@ -68,13 +68,13 @@ def print_character_rarities(stats_fp):
     
 def print_subtexts(stats_fp):
     results = db.execute('''
-    SELECT cards.subtext, COUNT(DISTINCT cards.character) FROM cards
+    SELECT cards.subtext, COUNT(DISTINCT cards.character), COUNT(*) FROM cards
     WHERE cards.subtext IS NOT NULL
     GROUP BY cards.subtext;
     ''').fetchall()
     stats_fp.write('Subtext/Company counts:\n')
     table = PrettyTable()
-    table.field_names = ["Subtext", "Count"]
+    table.field_names = ["Subtext", "Characters", "Cards"]
     for row in results:
         table.add_row(row)
     stats_fp.write(str(table))

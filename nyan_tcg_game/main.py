@@ -49,6 +49,7 @@ def main():
     def parse_bundle_data():
         bundle_data = ods_parser.read_bundle_data(args.ods_input, BundleType.CARD)
         bundle_data.extend(ods_parser.read_bundle_data(args.ods_input, BundleType.CHARACTER))
+        bundle_data.extend(ods_parser.read_bundle_data(args.ods_input, BundleType.BUNDLE))
         return parse_bundles(bundle_data, cards)
 
     bundles = parse_bundle_data()

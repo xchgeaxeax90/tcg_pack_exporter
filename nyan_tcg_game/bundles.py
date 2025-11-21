@@ -52,12 +52,21 @@ def parse_bundles(ods_data: list[dict],
             elif entry.bundle_type == BundleType.BUNDLE:
                 sub_bundles.append(entry.name)
         logger.debug(cards)
+        if cards and not characters:
+            bundle_type = BundleType.CARD 
+        elif not cards and characters:
+            bundle_type = BundleType.CHARACTER 
+        else:
+            if cards and characters:
+                logger.error("Invalid bundle specified, contains a mixture of cards and characters")
+            bundle_type = BundleType.CARD 
+
         if cards or characters or sub_bundles:
             bundles.append(Bundle(name=bundle_name,
-                                #bundle_type=BundleType.CHARACTER,
-                                characters=characters,
-                                cards=cards,
-                                sub_bundles=sub_bundles))
+                                  bundle_type=bundle_type,
+                                  characters=characters,
+                                  cards=cards,
+                                  sub_bundles=sub_bundles))
     return bundles
         
             

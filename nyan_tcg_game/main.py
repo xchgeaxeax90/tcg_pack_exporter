@@ -31,7 +31,7 @@ def get_args():
 def main():
     args = get_args()
     logging.basicConfig(level=args.log_level)
-    logging.getLogger("nyan_tcg_game.cards").setLevel(logging.DEBUG)
+    #logging.getLogger("nyan_tcg_game.crop_gui").setLevel(logging.DEBUG)
 
     image_directory = os.path.join(args.export_dir, IMAGE_DIR)
     pack_filename = os.path.join(args.export_dir, PACK_FILE)

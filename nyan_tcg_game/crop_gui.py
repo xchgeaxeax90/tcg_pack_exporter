@@ -1,6 +1,6 @@
 import tkinter as tk
 import logging
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, colorchooser
 from PIL import Image, ImageTk, ImageColor
 import os
 
@@ -52,6 +52,7 @@ class CropTool:
         self.color_input = tk.Text(btn_frame, height=1, width=10)
         self.color_input.pack(side="right", padx=5)
         self.color_input.bind("<<Modified>>", self.on_color_update)
+        tk.Button(btn_frame, text="Pick Color", command=self.pick_color).pack(side="right", padx=5)
 
         # --- Image handling ---
         self.root.bind("<Configure>", self.on_resize)
@@ -185,6 +186,12 @@ class CropTool:
         self.current_index += 1
         self.crop_coords = None
         self.load_image()
+
+    def pick_color(self):
+        color_str = self.color_input.get("1.0", "end-1c")
+        logger.debug("Creating choose color dialog")
+        ret = colorchooser.askcolor(color=color_str)
+        self.color_input.replace("1.0", "end-1c", ret[1])
 
     def get_crop_bbox_from_view_bbox(self, view_bbox):
         x1, y1, x2, y2 = view_bbox

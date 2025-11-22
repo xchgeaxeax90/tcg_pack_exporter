@@ -78,6 +78,13 @@ and Toof" that will match the cards:
  - Finana Ryugu (Tummy)
 
 But will not match other cards for Pomu or Finana.
+
+The "Bundle Groups" sheet allows the user to create bundles that
+include other sub-bundles. An example of this is shown in the
+template, where the Lazulight Bundle is included in the NijiEN
+Bundle, where the same could be done for Obsydia, Ethyria, etc.
+This sheet is not required to be included in the spreadsheet, the tool
+will just throw a warning if it is not found and continue.
    
 ** Exporting a Card Pack
 

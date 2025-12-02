@@ -357,6 +357,28 @@ files = [
 typing-extensions = ">=4.14.1"
 
 [[package]]
+name = "pyexcel"
+version = "0.7.4"
+description = "A wrapper library that provides one API to read, manipulate and writedata in different excel formats"
+optional = false
+python-versions = ">=3.6"
+groups = ["main"]
+files = [
+    {file = "pyexcel-0.7.4-py2.py3-none-any.whl", hash = "sha256:4f287fe2cc81c1fb2c0cf7f2be018b98391229c3752fb35e7ea3d9713043f72d"},
+    {file = "pyexcel-0.7.4.tar.gz", hash = "sha256:cbbdc60532bbb2a22fe4303e824aaa386ecf6dc514d1f87d1ad03a1385fee4bd"},
+]
+
+[package.dependencies]
+lml = ">=0.2.0"
+pyexcel-io = ">=0.6.2"
+texttable = ">=0.8.2"
+
+[package.extras]
+ods = ["pyexcel-ods3 (>=0.6.0)"]
+xls = ["pyexcel-xls (>=0.6.0)"]
+xlsx = ["pyexcel-xlsx (>=0.6.0)"]
+
+[[package]]
 name = "pyexcel-io"
 version = "0.6.7"
 description = "A python library to read and write structured data in csv, zipped csvformat and to/from databases"
@@ -408,6 +430,18 @@ files = [
 [package.dependencies]
 openpyxl = ">=2.6.1"
 pyexcel-io = ">=0.6.2"
+
+[[package]]
+name = "texttable"
+version = "1.7.0"
+description = "module to create simple ASCII tables"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "texttable-1.7.0-py2.py3-none-any.whl", hash = "sha256:72227d592c82b3d7f672731ae73e4d1f88cd8e2ef5b075a7a7f01a23a3743917"},
+    {file = "texttable-1.7.0.tar.gz", hash = "sha256:2d2068fb55115807d3ac77a4ca68fa48803e84ebb0ee2340f858107a36522638"},
+]
 
 [[package]]
 name = "tk"
@@ -463,4 +497,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "3ce9459d6e16932c973053c88ed499ea219853f0924716f8217c65a96bc57760"
+content-hash = "a5881d795bcfa3f8848f107e3f2334a7af00018ea22191310435aa56d6561a33"

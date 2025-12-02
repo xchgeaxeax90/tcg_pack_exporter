@@ -42,9 +42,10 @@ def print_bundle_membership(stats_fp):
     ''').fetchall()
     stats_fp.write('Number of bundles per character:\n')
     table = PrettyTable()
-    table.field_names = ["Character Name", "Total", "Char", "Card"]
+    table.field_names = ["Character Name", "Total", "Char", "Card", "Attn"]
     for row in results:
-        table.add_row(row)
+        needs_attention = '*' if row[2] == 0 else ''
+        table.add_row((*row, needs_attention))
     stats_fp.write(str(table))
     stats_fp.write('\n')
 
@@ -60,9 +61,10 @@ def print_character_rarities(stats_fp):
     GROUP BY ch.character ORDER BY ch.character''').fetchall()
     stats_fp.write('Rarities per character:\n')
     table = PrettyTable()
-    table.field_names = ["Character Name", "C", "R", "SR"]
+    table.field_names = ["Character Name", "C", "R", "SR", "Attn"]
     for row in results:
-        table.add_row(row)
+        needs_attention = '*' if row[1] == 0 else ''
+        table.add_row((*row, needs_attention))
     stats_fp.write(str(table))
     stats_fp.write('\n')
     

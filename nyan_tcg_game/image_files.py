@@ -21,6 +21,14 @@ def download_url_for_empty_filename(card, image_dir):
     output_filename = os.path.join(image_dir, image_filename)
     if not os.path.exists(output_filename):
         logger.info(f'Downloading {card.image_file_uri} as {output_filename}')
+        if 'pximg' in card.image_file_uri or 'pixiv' in card.image_file_uri:
+            logger.info(f"Adding pixiv specific headers the request for {output_filename}")
+            opener = urllib.request.build_opener()
+            opener.addheaders = [('referer', 'https://www.pixiv.net/')]
+            urllib.request.install_opener(opener)
+        else:
+            urllib.request.install_opener(None)
+
         try:
             urllib.request.urlretrieve(card.image_file_uri, output_filename)
         except Exception as e:

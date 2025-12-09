@@ -9,7 +9,7 @@ invalid_character_selector = re.compile(r'[()\'\"\[\]\{\}]')
 logger = logging.getLogger(__name__)
 
 
-def download_url_for_empty_filename(card, image_dir):
+def download_url_for_empty_filename(card, image_dir, log_file):
     """For cards with an empty image_url, this function downloads the
     image at the card's image_source url as the card's image data"""
     if not card.image_file_uri:
@@ -33,7 +33,8 @@ def download_url_for_empty_filename(card, image_dir):
             urllib.request.urlretrieve(card.image_file_uri, output_filename)
         except Exception as e:
             logger.error(f'Error downloading {card.image_file_uri}: {e}')
-            raise e
+            log_file.write(f'Error downloading image for Card: {card.name}, {card.variant}: {card.image_file_uri}\n')
+            return None
     else:
         logger.debug(f'Skipping {output_filename} as it already exists')
     card.local_image_path = output_filename
@@ -41,11 +42,14 @@ def download_url_for_empty_filename(card, image_dir):
 
 def download_missing_images(cards, download_dir):
     os.makedirs(download_dir, exist_ok=True)
-    return list(map(lambda c: download_url_for_empty_filename(c, download_dir), cards))
+    with open('bad_urls.txt', 'w') as log_file:
+        return list(filter(None,
+                           map(lambda c: download_url_for_empty_filename(c, download_dir, log_file), cards)))
 
 def fix_image_files(cards, image_dir):
     os.makedirs(image_dir, exist_ok=True)
-    def run(card):
-        return download_url_for_empty_filename(card, image_dir)
+    with open('bad_urls.txt', 'w') as log_file:
+        def run(card):
+            return download_url_for_empty_filename(card, image_dir, log_file)
 
-    return list(map(run, cards))
+        return list(map(run, cards))
